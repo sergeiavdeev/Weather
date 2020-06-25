@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Weather</string>
+    <string name="weather_sunny">&#xf00d;</string>
+    <string name="weather_cloudy">&#xf013;</string>
+    <string name="weather_rainy">&#xf019;</string>
+    <string name="weather_drizzle">&#xf01c;</string>
+    <string name="weather_thunder">&#xf01e;</string>
+    <string name="weather_snowy">&#xf01b;</string>
+    <string name="weather_token">3d96a812-4173-41e3-936f-2c9065950755</string>
+    <string name="geocode_token">9372f58c-b52b-4a23-b106-8dd057ddfef8</string>
+</resources>
