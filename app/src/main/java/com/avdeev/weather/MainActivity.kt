@@ -10,10 +10,14 @@ import retrofit2.Callback
 import retrofit2.Response
 import android.Manifest
 import android.content.pm.PackageManager
+import android.os.Looper
 import com.avdeev.weather.network.YandexGeocoderAPI
 import com.avdeev.weather.network.YandexWeatheAPI
 import com.avdeev.weather.network.data.WeatherResponse
 import com.avdeev.weather.network.data.YandexGeocoderResponse
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 
 class MainActivity : AppCompatActivity() {
@@ -23,12 +27,27 @@ class MainActivity : AppCompatActivity() {
     private var lat: Double = 0.0;
     private var lon: Double = 0.0;
 
+    private lateinit var locationCallback: LocationCallback
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         icon.typeface = Typeface.createFromAsset(assets, "weather.ttf")
+
+        locationCallback = object : LocationCallback() {
+            override fun onLocationResult(locationResult: LocationResult?) {
+                locationResult ?: return
+                for (location in locationResult.locations){
+                    // Update UI with location data
+                    // ...
+                    var a = 1;
+                }
+            }
+        }
+
         getLocation();
         sendServerRequest();
+
     }
 
     private fun renderData(dataModel: WeatherResponse?, error: Throwable?) {
@@ -113,7 +132,7 @@ class MainActivity : AppCompatActivity() {
                         }
 
                     } else {
-                        val a = 2;
+                        TODO("Bad request")
                     }
                 }
 
@@ -137,6 +156,12 @@ class MainActivity : AppCompatActivity() {
                 geocode(lat, lon);
             }
         }
+
+        locationClient.requestLocationUpdates(
+            LocationRequest.create(),
+            locationCallback,
+            Looper.getMainLooper()
+        )
     }
 
     private fun checkPermission() : Boolean {
@@ -151,6 +176,8 @@ class MainActivity : AppCompatActivity() {
 
         return permission;
     }
+
+
 }
 
 
