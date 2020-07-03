@@ -19,6 +19,7 @@ import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
+import java.util.concurrent.TimeUnit
 
 class MainActivity : AppCompatActivity() {
 
@@ -40,7 +41,9 @@ class MainActivity : AppCompatActivity() {
                 for (location in locationResult.locations){
                     // Update UI with location data
                     // ...
-                    var a = 1;
+                    lat = location.latitude;
+                    lon = location.longitude;
+                    geocode(lat, lon);
                 }
             }
         }
@@ -129,6 +132,7 @@ class MainActivity : AppCompatActivity() {
                         if (body != null) {
                             city_field.text = body.response.GeoObjectCollection.featureMember[0].GeoObject.name;
                             city_descr.text = body.response.GeoObjectCollection.featureMember[0].GeoObject.description;
+                            location_field.text = "Широта: $lat, Долгота: $lon";
                         }
 
                     } else {
@@ -152,13 +156,18 @@ class MainActivity : AppCompatActivity() {
             if (it != null) {
                 lat = it.latitude;
                 lon = it.longitude;
-                sendServerRequest();
+                //sendServerRequest();
                 geocode(lat, lon);
             }
         }
 
         locationClient.requestLocationUpdates(
-            LocationRequest.create(),
+            LocationRequest().apply {
+                interval = TimeUnit.SECONDS.toMillis(60)
+                fastestInterval = TimeUnit.SECONDS.toMillis(30)
+                maxWaitTime = TimeUnit.MINUTES.toMillis(2);
+                priority = LocationRequest.PRIORITY_HIGH_ACCURACY;
+            },
             locationCallback,
             Looper.getMainLooper()
         )
